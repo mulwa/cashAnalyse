@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpesa_ledger/pages/widgets/error_message.dart';
 import 'package:mpesa_ledger/providers/app_state.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:mpesa_ledger/utils/currencyUtil.dart';
@@ -12,10 +13,9 @@ class MoneyInPage extends StatelessWidget {
     AppStateStatus _loadingStatus =
         Provider.of<AppState>(context, listen: false).loadingStatus;
     return Scaffold(
-      body: (_loadingStatus == AppStateStatus.ErrorFound)
-          ? Center(
-              child: Text("An Error Has Occured Try later"),
-            )
+      body: (_loadingStatus == AppStateStatus.ErrorFound &&
+              (_loadingStatus) != AppStateStatus.Loading)
+          ? ErrorMessage(errorMessage: "An Error Has Occured Try later")
           : (_loadingStatus == AppStateStatus.Loading)
               ? Center(
                   child: CircularProgressIndicator(),
@@ -49,8 +49,8 @@ class MoneyInPage extends StatelessWidget {
                           ),
                         );
                       })
-                  : Center(
-                      child: Text("Nothing Found"),
+                  : ErrorMessage(
+                      errorMessage: "Nothing Found",
                     ),
     );
   }
