@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "194411088520",
+    "project_id": "pesa-ledger",
+    "storage_bucket": "pesa-ledger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194411088520:android:16809faf2bfeab7cd66d3d",
+        "android_client_info": {
+          "package_name": "com.mulwatech.pesa_ledger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194411088520-pvrhjdgifaraa15mi5duo5k7pkakv3fe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP-tPAIOUNkMOde1o6Lb99SAPcVWsimb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194411088520-pvrhjdgifaraa15mi5duo5k7pkakv3fe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
