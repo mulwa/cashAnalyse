@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mpesa_ledger/pages/loginPage.dart';
 import 'package:mpesa_ledger/pages/main_entry.dart';
+import 'package:mpesa_ledger/pages/transaction/post_received_cash.dart';
 import 'package:mpesa_ledger/providers/app_state.dart';
 import 'package:provider/provider.dart';
 
@@ -13,7 +14,7 @@ class Wrapper extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             return ChangeNotifierProvider(
-                create: (context) => AppState(), child: MainEntryPage());
+                create: (context) => AppState(), child: PostReceivedCash());
           }
           return LoginPage();
         });

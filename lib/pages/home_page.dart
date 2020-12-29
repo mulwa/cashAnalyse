@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms_inbox/flutter_sms_inbox.dart';
-import 'package:mpesa_ledger/bloc/received.bloc.dart';
-import 'package:mpesa_ledger/models/received.model.dart';
 import 'package:mpesa_ledger/providers/app_state.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/constants.dart';
@@ -20,16 +18,7 @@ class _HomePageState extends State<HomePage> {
   List messages = new List();
   @override
   void initState() {
-    var received =
-        Provider.of<AppState>(context, listen: false).receivedMessages;
-    print(received);
-
     super.initState();
-  }
-
-  void dispose() {
-    receivedBloc.dispose();
-    super.dispose();
   }
 
   fetchSMS() async {
@@ -79,47 +68,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // receivedBloc.eventSink.add(ReceivedActions.read);
-    var received =
-        Provider.of<AppState>(context, listen: false).receivedMessages;
-    print('received messages');
-    print(received);
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Smsm"),
-      ),
-      body: ListView.separated(
-          separatorBuilder: (context, index) => Divider(
-                color: Colors.black,
-              ),
-          itemCount: received.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Icon(
-                  Icons.markunread,
-                  color: Colors.pink,
-                ),
-                title: Text(
-                    "${received[index].senderName.toString()} ${received[index].senderName.toString()}"),
-                subtitle: Text(
-                  received[index].amount.toString(),
-                  maxLines: 3,
-                  style: TextStyle(),
-                ),
-                trailing: Text(received[index].transferDate),
-              ),
-            );
-          }),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: colorPrimaryDark,
-        onPressed: () => AuthService.logOut(),
-        child: Icon(
-          Icons.undo,
-        ),
-      ),
-    );
+        appBar: AppBar(
+      title: Text("Smsm"),
+    ));
   }
 }

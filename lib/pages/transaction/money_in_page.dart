@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mpesa_ledger/models/received.model.dart';
 import 'package:mpesa_ledger/pages/transaction/post_received_cash.dart';
 import 'package:mpesa_ledger/pages/widgets/error_message.dart';
 import 'package:mpesa_ledger/pages/widgets/total_display_widget.dart';
@@ -21,30 +20,16 @@ class MoneyInPage extends StatelessWidget {
               total: "633333",
               bgColor: colorGreen,
             ),
-            Consumer<AppState>(
-              builder: (context, value, child) {
-                if (value.loadingStatus == AppStateStatus.Loading) {
-                  return Expanded(child: CircularProgressIndicator());
-                } else if (value.loadingStatus == AppStateStatus.ErrorFound) {
-                  return ErrorMessage(
-                      errorMessage: "An error has Occurred try later");
-                } else {
-                  return Expanded(
-                    child: ListView.separated(
-                        shrinkWrap: true,
-                        separatorBuilder: (context, index) => Divider(
-                              color: Colors.grey,
-                            ),
-                        itemCount: value.receivedMessages.length,
-                        itemBuilder: (context, index) {
-                          return ReceivedWidget(
-                            received: value.receivedMessages[index],
-                          );
-                        }),
-                  );
-                }
-              },
-            ),
+            Expanded(
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => Divider(
+                          color: Colors.grey,
+                        ),
+                    itemCount: 2,
+                    itemBuilder: (context, index) {
+                      return ReceivedWidget();
+                    })),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -62,10 +47,8 @@ class MoneyInPage extends StatelessWidget {
 }
 
 class ReceivedWidget extends StatelessWidget {
-  final Received received;
   const ReceivedWidget({
     Key key,
-    @required this.received,
   }) : super(key: key);
 
   @override
@@ -78,16 +61,13 @@ class ReceivedWidget extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      title: Text(
-          "${received.senderName.toString()} ${received.senderName.toString()}"),
+      title: Text("mulea"),
       trailing: Text(
-        CurrencyUtils.formatCurrency(received.amount.toString()),
+        CurrencyUtils.formatCurrency(14000),
         style:
             TextStyle(fontWeight: FontWeight.bold, color: secondaryPrimaryDark),
       ),
-      subtitle: Text(
-        received.transferDate,
-      ),
+      subtitle: Text("5666/452/2020"),
     );
   }
 }
