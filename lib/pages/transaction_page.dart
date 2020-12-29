@@ -3,6 +3,9 @@ import 'package:mpesa_ledger/pages/transaction/money_in_page.dart';
 import 'package:mpesa_ledger/pages/transaction/money_out_page.dart';
 import 'package:mpesa_ledger/pages/transaction/payments_page.dart';
 import 'package:mpesa_ledger/pages/widgets/drawer.dart';
+import 'package:mpesa_ledger/providers/cash_out_provider.dart';
+import 'package:mpesa_ledger/providers/payment_provider.dart';
+import 'package:provider/provider.dart';
 
 class TransactionPage extends StatelessWidget {
   @override
@@ -43,8 +46,10 @@ class TransactionPage extends StatelessWidget {
           ),
           body: TabBarView(children: <Widget>[
             MoneyInPage(),
-            MoneyOutPage(),
-            PaymentPage()
+            ChangeNotifierProvider<CashOutProvider>.value(
+                value: CashOutProvider.instance, child: MoneyOutPage()),
+            ChangeNotifierProvider<PaymentProvider>.value(
+                value: PaymentProvider.instance, child: PaymentPage())
           ])),
     );
   }

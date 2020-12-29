@@ -46,6 +46,11 @@ class Sends {
       this.createdAt,
       this.updatedAt});
 
+  @override
+  String toString() {
+    return '{ ${this.receiverName} ${this.amount}}';
+  }
+
   Sends.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     receiverName = json['receiverName'];

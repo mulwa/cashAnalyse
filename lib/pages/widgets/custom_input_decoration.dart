@@ -9,9 +9,7 @@ class CustomInputDecoration extends InputDecoration {
       : super(
             labelText: labelText,
             hintText: hintText,
-            hintStyle: TextStyle(
-              color: hintColor,
-            ),
+            hintStyle: TextStyle(color: hintColor, fontSize: 18.0),
             border: InputBorder.none,
             fillColor: inputBackground,
             filled: true);
