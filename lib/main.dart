@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppState(),
       child: MaterialApp(
         title: 'pesa analytica',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             primaryColor: colorPrimary,
             accentColor: colorAccent,

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class SnackBarService {
   BuildContext _buildContext;
   static SnackBarService instance = SnackBarService();
-  SnackBarService() {}
+  SnackBarService();
   set buildContext(BuildContext _context) {
     _buildContext = _context;
   }
 
-  void showSnackBarError(String _message) {
+  void showSnackBarError({String message}) {
     Scaffold.of(_buildContext).showSnackBar(SnackBar(
       content: Text(
-        _message,
+        message,
         style: TextStyle(color: Colors.white, fontSize: 15.0),
       ),
       backgroundColor: Colors.red,
@@ -19,10 +19,10 @@ class SnackBarService {
     ));
   }
 
-  void showSnackBarSucess(String _message) {
+  void showSnackBarSuccess({String message}) {
     Scaffold.of(_buildContext).showSnackBar(SnackBar(
       content: Text(
-        _message,
+        message,
         style: TextStyle(color: Colors.white, fontSize: 15.0),
       ),
       backgroundColor: Colors.green,

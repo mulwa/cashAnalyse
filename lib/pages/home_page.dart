@@ -1,12 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sms_inbox/flutter_sms_inbox.dart';
-import 'package:mpesa_ledger/providers/app_state.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/constants.dart';
-import 'package:mpesa_ledger/services/auth_service.dart';
-import 'package:mpesa_ledger/utils/color.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,6 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   SmsQuery query = new SmsQuery();
   List messages = new List();
+  DatabaseService databaseService = DatabaseService();
   @override
   void initState() {
     super.initState();
@@ -35,15 +31,16 @@ class _HomePageState extends State<HomePage> {
       print("${matches.length}");
       var amount = matches.elementAt(0).group(1);
       var name = matches.elementAt(0).group(2);
-      var phonenumber = matches.elementAt(0).group(3);
+      var phoneNumber = matches.elementAt(0).group(3);
       var date = matches.elementAt(0).group(4);
 
-      DatabaseService.storeReceived(
-          amount: amount,
-          date: date,
-          receiverName: name,
-          phoneNumber: phonenumber,
-          uid: FirebaseAuth.instance.currentUser.uid);
+      // databaseService.storeReceived(
+      //   projectId: ,
+      //   amount: amount,
+      //   transactionDate: date,
+      //   senderName: name,
+      //   phoneNumber: phoneNumber,
+      // );
     } else if (sms.contains("sent")) {
       RegExp regExp = new RegExp(Constants.sentRegex);
       print("..............Sent..................");

@@ -16,14 +16,14 @@ class TotalWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: MediaQuery.of(context).size.height * 0.120,
       width: double.infinity,
       color: bgColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(CurrencyUtils.formatCurrency(total),
-              style: TextStyle(color: Colors.white, fontSize: 26.0)),
+              style: TextStyle(color: Colors.white, fontSize: 20.0)),
           SizedBox(
             height: 5.0,
           ),

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/pages/analysis_page.dart';
 import 'package:mpesa_ledger/pages/transaction_page.dart';
-import 'package:mpesa_ledger/pages/widgets/drawer.dart';
 
 class MainEntryPage extends StatefulWidget {
+  final Group group;
+
+  const MainEntryPage({Key key, @required this.group}) : super(key: key);
   @override
   _MainEntryPageState createState() => _MainEntryPageState();
 }
@@ -20,16 +23,16 @@ class _MainEntryPageState extends State<MainEntryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: AppDrawer(),
-      body: [AnalysisPage(), TransactionPage()].elementAt(_selectedIndex),
+      body: [
+        TransactionPage(group: widget.group),
+        AnalysisPage(group: widget.group)
+      ].elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              title: Text("Analysis"), icon: Icon(Icons.graphic_eq)),
-          BottomNavigationBarItem(
               title: Text("Transactions"), icon: Icon(Icons.history)),
-          // BottomNavigationBarItem(
-          //     title: Text("Calender"), icon: Icon(Icons.calendar_today)),
+          BottomNavigationBarItem(
+              title: Text("Analysis"), icon: Icon(Icons.graphic_eq)),
         ],
         onTap: _onBarItemTap,
         currentIndex: _selectedIndex,

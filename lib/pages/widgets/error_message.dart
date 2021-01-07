@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpesa_ledger/utils/color.dart';
 
 class ErrorMessage extends StatelessWidget {
   final String errorMessage;
@@ -9,7 +10,8 @@ class ErrorMessage extends StatelessWidget {
     return Center(
       child: Text(
         errorMessage,
-        style: TextStyle(color: Colors.red),
+        style: TextStyle(color: colorPrimary, fontSize: 18.0),
+        textAlign: TextAlign.center,
       ),
     );
   }

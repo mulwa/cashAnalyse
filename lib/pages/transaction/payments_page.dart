@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mpesa_ledger/pages/widgets/error_message.dart';
+import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/pages/widgets/total_display_widget.dart';
-import 'package:mpesa_ledger/providers/app_state.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:mpesa_ledger/utils/currencyUtil.dart';
-import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
+  final Group group;
+
+  const PaymentPage({Key key, @required this.group}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +24,12 @@ class PaymentPage extends StatelessWidget {
                 separatorBuilder: (context, index) => Divider(
                       color: Colors.grey,
                     ),
-                itemCount: 1,
+                itemCount: 3,
                 itemBuilder: (context, index) {
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundColor: colorPrimary,
-                      child: Text("cm"),
+                      child: Text("CM"),
                     ),
                     title: Text("Christopher Mulwa"),
                     trailing: Text(
