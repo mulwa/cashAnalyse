@@ -5,6 +5,7 @@ class Received {
   final String id;
   final String amount;
   final String transactionDate;
+  final String transactionRef;
   final String phoneNumber;
   final String senderName;
   final dynamic timestamp;
@@ -15,6 +16,7 @@ class Received {
       this.id,
       this.amount,
       this.transactionDate,
+      this.transactionRef,
       this.phoneNumber,
       this.mode,
       this.senderName});
@@ -23,6 +25,7 @@ class Received {
     Map data = snapshot.data();
     return Received(
         id: snapshot.id,
+        transactionRef: data['transactionRef'],
         amount: data['amount'],
         phoneNumber: data['phoneNumber'],
         senderName: data['senderName'],

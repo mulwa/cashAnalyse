@@ -10,6 +10,7 @@ import 'package:mpesa_ledger/pages/widgets/total_display_widget.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:mpesa_ledger/utils/currencyUtil.dart';
+import 'package:provider/provider.dart';
 
 class MoneyOutPage extends StatelessWidget {
   final Group group;
@@ -17,56 +18,36 @@ class MoneyOutPage extends StatelessWidget {
   const MoneyOutPage({Key key, @required this.group}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    List<Expenditure> _expenditure = Provider.of<List<Expenditure>>(context);
     return Scaffold(
         body: Column(
           children: [
-            StreamBuilder(
-                stream: DatabaseService()
-                    .getProjectExpenditure(projectId: group.id),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return ErrorMessage(errorMessage: "An error Has Occurred");
-                  }
-                  if (snapshot.hasData) {
-                    List<Expenditure> _expenditure = snapshot.data.docs
-                        .map((DocumentSnapshot doc) =>
-                            Expenditure.fromDocumentSnapshot(doc))
-                        .toList();
-                    return Expanded(
-                        child: _expenditure.length > 1
-                            ? Column(
-                                children: [
-                                  TotalWidget(
-                                    title: "Total cash out",
-                                    total: _expenditure
-                                        .map((e) => double.parse(e.amount
-                                            .toString()
-                                            .replaceAll(",", "")))
-                                        .reduce(
-                                            (value, element) => value + element)
-                                        .toString(),
-                                  ),
-                                  Expanded(
-                                      child: ListView.separated(
-                                          itemBuilder: (context, index) {
-                                            return ExpenditureWidget(
-                                                expenditure:
-                                                    _expenditure[index],
-                                                group: group);
-                                          },
-                                          separatorBuilder: (context, index) =>
-                                              Divider(),
-                                          itemCount: _expenditure.length))
-                                ],
-                              )
-                            : ErrorMessage(
-                                errorMessage:
-                                    "No Expenditure has been recorded"));
-                  }
-                  return Expanded(
-                      child: Center(child: CircularProgressIndicator()));
-                })
+            Expanded(
+                child: _expenditure.length > 1
+                    ? Column(
+                        children: [
+                          TotalWidget(
+                            title: "Total cash out",
+                            total: _expenditure
+                                .map((e) => double.parse(
+                                    e.amount.toString().replaceAll(",", "")))
+                                .reduce((value, element) => value + element)
+                                .toString(),
+                          ),
+                          Expanded(
+                              child: ListView.separated(
+                                  itemBuilder: (context, index) {
+                                    return ExpenditureWidget(
+                                        expenditure: _expenditure[index],
+                                        group: group);
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      Divider(),
+                                  itemCount: _expenditure.length))
+                        ],
+                      )
+                    : ErrorMessage(
+                        errorMessage: "No Expenditure has been recorded"))
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -103,7 +84,7 @@ class ExpenditureWidget extends StatelessWidget {
           color: Colors.white,
         ),
       ),
-      title: Text(expenditure.receiverName),
+      title: Text('${expenditure.receiverName}'),
       trailing: Text(
         CurrencyUtils.formatCurrency(
             expenditure.amount.toString().replaceAll(",", "")),

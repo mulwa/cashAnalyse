@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mpesa_ledger/models/expenditure.model.dart';
+import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/models/received.model.dart';
 
 class DatabaseService {
@@ -12,20 +13,23 @@ class DatabaseService {
     return users.doc(uid).set({"email": email});
   }
 
-  Future<DocumentReference> storeReceived(
+  Future<void> storeReceived(
       {String senderName,
       String phoneNumber,
       String amount,
       String transactionDate,
+      String transactionRef,
       String mode = 'Mpesa',
       @required String projectId}) async {
     return _db
         .collection('received')
         .doc(projectId)
         .collection("projectReceived")
-        .add({
+        .doc(transactionRef)
+        .set({
       "senderName": senderName,
       "phoneNumber": phoneNumber,
+      "transactionRef": transactionRef,
       "amount": amount,
       "transactionDate": transactionDate,
       "timestamp": DateTime.now().toString(),
@@ -33,13 +37,14 @@ class DatabaseService {
     });
   }
 
-  Future<DocumentReference> storeExpenditure(
+  Future<void> storeExpenditure(
       {Expenditure expenditure, @required String projectId}) async {
     return _db
         .collection('expenditure')
         .doc(projectId)
         .collection("projectExpenditure")
-        .add({
+        .doc(expenditure.transactionRef)
+        .set({
       "receiverName": expenditure.receiverName,
       "phoneNumber": expenditure.phoneNumber,
       "amount": expenditure.amount,
@@ -111,6 +116,17 @@ class DatabaseService {
         .doc(FirebaseAuth.instance.currentUser.uid)
         .collection("userProjects")
         .snapshots();
+  }
+
+  Future<Group> getSingleProject({String projectId}) {
+    return _db
+        .collection("projects")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("userProjects")
+        .doc(projectId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) =>
+            Group.fromDataSnapshot(documentSnapshot));
   }
 
   Stream<List<Received>> getProjectsCashIn({String projectId}) {

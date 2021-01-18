@@ -30,9 +30,9 @@ class _MainEntryPageState extends State<MainEntryPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              title: Text("Transactions"), icon: Icon(Icons.history)),
+              label: "Transactions", icon: Icon(Icons.history)),
           BottomNavigationBarItem(
-              title: Text("Analysis"), icon: Icon(Icons.graphic_eq)),
+              label: "Analysis", icon: Icon(Icons.graphic_eq)),
         ],
         onTap: _onBarItemTap,
         currentIndex: _selectedIndex,

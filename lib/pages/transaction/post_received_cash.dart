@@ -11,6 +11,7 @@ import 'package:mpesa_ledger/pages/widgets/roundedApealBtn.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:mpesa_ledger/utils/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class PostReceivedCash extends StatefulWidget {
   final Group group;
@@ -144,14 +145,16 @@ class MpesaUiWidget extends StatelessWidget {
             press: () {
               FocusScope.of(context).requestFocus(FocusNode());
               if (_textController.text.contains("received")) {
-                RegExp regExp = new RegExp(Constants.receivedRegex);
+                RegExp regExp = new RegExp(Constants.newReceivedRegex);
                 var matches = regExp.allMatches(_textController.text);
                 print("${matches.length}");
-                var amount = matches.elementAt(0).group(1).trim();
-                var name = matches.elementAt(0).group(2).trim();
-                var phoneNumber = matches.elementAt(0).group(3).trim();
-                var date = matches.elementAt(0).group(4).trim();
+                var transactionRef = matches.elementAt(0).group(1).trim();
+                var amount = matches.elementAt(0).group(2).trim();
+                var name = matches.elementAt(0).group(3).trim();
+                var phoneNumber = matches.elementAt(0).group(4).trim();
+                var date = matches.elementAt(0).group(5).trim();
                 Received received = Received(
+                    transactionRef: transactionRef,
                     amount: amount,
                     mode: "Mpesa",
                     senderName: name,
@@ -193,22 +196,22 @@ class MpesaUiWidget extends StatelessWidget {
       ),
     );
     try {
-      var res = await _databaseService.storeReceived(
+      _databaseService.storeReceived(
+          transactionRef: received.transactionRef,
           projectId: group.id,
           amount: received.amount,
           senderName: received.senderName,
           phoneNumber: received.phoneNumber,
           mode: received.mode,
           transactionDate: received.transactionDate);
-      ;
-      Navigator.pop(context);
-      if (res != null) {
-        _textController.clear();
 
-        Timer(Duration(seconds: 1), () {
-          Navigator.pop(context);
-        });
-      }
+      Navigator.pop(context);
+
+      _textController.clear();
+
+      Timer(Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
     } catch (error) {
       Navigator.pop(context);
       print("error $error");
@@ -351,6 +354,7 @@ class _CashUiWidgetState extends State<CashUiWidget> {
                   var phoneNumber = _phoneNumberController.text.trim();
                   var date = DateTime.now().toString();
                   Received received = Received(
+                      transactionRef: Uuid().v4(),
                       amount: amount,
                       mode: "Cash",
                       senderName: name,
@@ -386,21 +390,20 @@ class _CashUiWidgetState extends State<CashUiWidget> {
       ),
     );
     try {
-      var res = await _databaseService.storeReceived(
+      await _databaseService.storeReceived(
           projectId: widget.group.id,
+          transactionRef: received.transactionRef,
           amount: received.amount,
           senderName: received.senderName,
           phoneNumber: received.phoneNumber,
           mode: received.mode,
           transactionDate: received.transactionDate);
       Navigator.pop(context);
-      if (res != null) {
-        _formKey.currentState.reset();
+      _formKey.currentState.reset();
 
-        Timer(Duration(seconds: 1), () {
-          Navigator.pop(context);
-        });
-      }
+      Timer(Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
     } catch (error) {
       Navigator.pop(context);
       print("error $error");

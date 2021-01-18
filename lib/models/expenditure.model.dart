@@ -9,6 +9,7 @@ class Expenditure {
   final String receiverName;
   final dynamic timestamp;
   final String mode;
+  final String transactionRef;
 
   Expenditure(
       {this.id,
@@ -18,17 +19,20 @@ class Expenditure {
       this.phoneNumber,
       this.receiverName,
       this.timestamp,
+      this.transactionRef,
       this.mode});
 
   factory Expenditure.fromDocumentSnapshot(DocumentSnapshot snapshot) {
     Map data = snapshot.data();
     return Expenditure(
         id: snapshot.id,
+        transactionRef: data['transactionRef'],
         amount: data['amount'],
         phoneNumber: data['phoneNumber'] ?? 'null',
         receiverName: data['receiverName'],
         transactionDate: data['transactionDate'],
         mode: data['mode'] ?? 'Mpesa',
+        title: data['title'],
         timestamp: data['timestamp']);
   }
 }

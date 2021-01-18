@@ -27,7 +27,15 @@ class ConfirmExpenditure extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Confirm Paid", style: titleStyle),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Confirm Paid", style: titleStyle),
+                    expenditure.mode == "Mpesa"
+                        ? Text(expenditure.transactionRef, style: titleStyle)
+                        : Container(),
+                  ],
+                ),
                 SizedBox(
                   height: 10.0,
                 ),
@@ -39,6 +47,7 @@ class ConfirmExpenditure extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
+                      flex: 2,
                       child: Text(
                         expenditure.receiverName,
                         style: subtitleStyle,

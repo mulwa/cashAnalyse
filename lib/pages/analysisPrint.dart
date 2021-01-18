@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mpesa_ledger/models/expenditure.model.dart';
+import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/models/received.model.dart';
 import 'package:mpesa_ledger/pages/PDFpreview.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,8 +19,16 @@ class AnalysisPrint {
   PdfColor _black = PdfColor.fromHex('000000');
   final List<Received> received;
   final List<Expenditure> expenditure;
+  final Group group;
+  final String totalCashIn;
+  final String totalCashOut;
 
-  AnalysisPrint({@required this.received, @required this.expenditure});
+  AnalysisPrint(
+      {@required this.group,
+      @required this.received,
+      @required this.totalCashIn,
+      @required this.totalCashOut,
+      @required this.expenditure});
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -50,21 +59,22 @@ class AnalysisPrint {
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Container(
-                  height: 50,
-                  child: pw.Text("Uungani Contributors",
+                  child: pw.Text(group.title,
                       style: pw.TextStyle(
                         fontSize: 26,
                         fontWeight: pw.FontWeight.bold,
                         color: _colorAccent,
                       ))),
               pw.SizedBox(height: 6),
-              pw.Text(
-                  "Contribution towards construction of commercial business shops",
+              pw.Text(group.description,
                   style: pw.TextStyle(fontSize: 16, color: PdfColors.black),
                   textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 6),
+              pw.Text(CurrencyUtils.formatUtc(DateTime.now().toString()),
+                  style: pw.TextStyle(color: _black)),
+              pw.SizedBox(height: 6),
               pw.Divider(color: _colorAccent),
-              pw.SizedBox(height: 10),
+              pw.SizedBox(height: 6),
             ],
           ),
           pw.Column(children: [
@@ -84,7 +94,7 @@ class AnalysisPrint {
                                   fontWeight: pw.FontWeight.bold,
                                 )),
                             pw.SizedBox(width: 10.0),
-                            pw.Text(CurrencyUtils.formatCurrency("2000"),
+                            pw.Text(CurrencyUtils.formatCurrency(totalCashIn),
                                 style: pw.TextStyle(
                                   color: PdfColors.white,
                                   fontSize: 12.0,
@@ -106,7 +116,7 @@ class AnalysisPrint {
                                   fontWeight: pw.FontWeight.bold,
                                 )),
                             pw.SizedBox(width: 10.0),
-                            pw.Text(CurrencyUtils.formatCurrency("200"),
+                            pw.Text(CurrencyUtils.formatCurrency(totalCashOut),
                                 style: pw.TextStyle(
                                   color: PdfColors.white,
                                   fontSize: 12.0,
@@ -132,7 +142,11 @@ class AnalysisPrint {
                               fontWeight: pw.FontWeight.bold,
                             )),
                         pw.SizedBox(width: 10.0),
-                        pw.Text(CurrencyUtils.formatCurrency("2000"),
+                        pw.Text(
+                            CurrencyUtils.formatCurrency(
+                                (double.parse(totalCashIn) -
+                                        double.parse(totalCashOut))
+                                    .toString()),
                             style: pw.TextStyle(
                               color: _colorAccent,
                               fontSize: 14.0,
@@ -163,7 +177,7 @@ class AnalysisPrint {
   pw.Widget _buildExpenditureTable(pw.Context context) {
     return expenditure.length > 0
         ? pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 50),
             pw.Text("Cash Out",
                 style: pw.TextStyle(
                     color: _black,

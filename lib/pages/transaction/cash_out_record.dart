@@ -9,6 +9,7 @@ import 'package:mpesa_ledger/pages/widgets/roundedApealBtn.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:mpesa_ledger/utils/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class CashOutPage extends StatefulWidget {
   final Group group;
@@ -30,7 +31,7 @@ class _CashOutPageState extends State<CashOutPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  DatabaseService _databaseService = DatabaseService();
+  var uuid = Uuid();
 
   final FocusNode _nameFocusNode = FocusNode();
 
@@ -219,29 +220,33 @@ class _CashOutPageState extends State<CashOutPage> {
 
   void _handleMpesaUpload(BuildContext context, {String mpesaMsg}) {
     if (mpesaMsg.isNotEmpty) {
+      var transactionRef;
       var amount;
       var name;
       var phoneNumber;
       var date;
       if (mpesaMsg.contains("sent") || mpesaMsg.contains("paid")) {
         if (mpesaMsg.contains("sent")) {
-          RegExp regExp = new RegExp(Constants.sentRegex);
+          RegExp regExp = new RegExp(Constants.newSentRegex);
           print("..............Sent..................");
           var matches = regExp.allMatches(mpesaMsg);
-          amount = matches.elementAt(0).group(1);
-          name = matches.elementAt(0).group(2);
-          phoneNumber = matches.elementAt(0).group(3);
-          date = matches.elementAt(0).group(4);
+          transactionRef = matches.elementAt(0).group(1);
+          amount = matches.elementAt(0).group(2);
+          name = matches.elementAt(0).group(3);
+          phoneNumber = matches.elementAt(0).group(4);
+          date = matches.elementAt(0).group(5);
         } else if (mpesaMsg.contains("paid")) {
-          RegExp regExp = new RegExp(Constants.paidRegex);
+          RegExp regExp = new RegExp(Constants.newPaid);
           print("..............paid..................");
           var matches = regExp.allMatches(mpesaMsg);
-          amount = matches.elementAt(0).group(1);
-          name = matches.elementAt(0).group(2);
-          phoneNumber = "070000000";
-          date = matches.elementAt(0).group(3);
+          transactionRef = matches.elementAt(0).group(1);
+          amount = matches.elementAt(0).group(2);
+          name = matches.elementAt(0).group(3);
+          phoneNumber = "0707200314";
+          date = matches.elementAt(0).group(4);
         }
         Expenditure expenditure = Expenditure(
+            transactionRef: transactionRef,
             amount: amount,
             mode: "Mpesa",
             phoneNumber: phoneNumber,
@@ -313,6 +318,7 @@ class _CashOutPageState extends State<CashOutPage> {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
                     Expenditure expenditure = Expenditure(
+                        transactionRef: uuid.v4(),
                         amount: _amountController.text.trim(),
                         mode: "Cash",
                         phoneNumber: _phoneNumberController.text.trim(),
@@ -353,15 +359,15 @@ class _CashOutPageState extends State<CashOutPage> {
     );
 
     try {
-      var res = await DatabaseService().storeExpenditure(
+      await DatabaseService().storeExpenditure(
           projectId: widget.group.id, expenditure: expenditure);
       Navigator.pop(context);
-      if (res != null) {
-        Navigator.pop(context);
-        // _formKey.currentState.reset();
-        // _expenditureDescController.clear();
-        // _mpesaController.clear();
-      }
+      // if (res != null) {
+      Navigator.pop(context);
+      // _formKey.currentState.reset();
+      // _expenditureDescController.clear();
+      // _mpesaController.clear();
+      // }
     } catch (error) {
       print("An error $error");
       _scaffoldKey.currentState.showSnackBar(SnackBar(

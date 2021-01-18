@@ -13,6 +13,7 @@ import 'package:mpesa_ledger/services/auth_service.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:provider/provider.dart';
+import 'package:mpesa_ledger/models/group.model.dart';
 
 class GroupListPage extends StatelessWidget {
   DatabaseService _databaseService = DatabaseService();
@@ -77,7 +78,11 @@ class GroupListPage extends StatelessWidget {
                                         value: DatabaseService()
                                             .getProjectExpenditure2(
                                                 projectId: _groups[index].id),
-                                      )
+                                      ),
+                                      FutureProvider<Group>.value(
+                                          value: DatabaseService()
+                                              .getSingleProject(
+                                                  projectId: _groups[index].id))
                                     ],
                                     child: MainEntryPage(
                                       group: _groups[index],

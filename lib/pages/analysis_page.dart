@@ -15,27 +15,12 @@ class AnalysisPage extends StatelessWidget {
 
   AnalysisPage({Key key, @required this.group}) : super(key: key);
 
-  // final products = <Product>[
-  //   Product('19874', pw.LoremText().word(), 3.99, 2),
-  //   Product('98452', pw.LoremText().sentence(6), 15, 2),
-  //   Product('28375', pw.LoremText().sentence(4), 6.95, 3),
-  //   Product('95673', pw.LoremText().sentence(3), 49.99, 4),
-  //   Product('23763', pw.LoremText().sentence(2), 560.03, 1),
-  //   Product('55209', pw.LoremText().sentence(5), 26, 1),
-  //   Product('09853', pw.LoremText().sentence(5), 26, 1),
-  //   Product('23463', pw.LoremText().sentence(5), 34, 1),
-  //   Product('56783', pw.LoremText().sentence(5), 7, 4),
-  //   Product('78256', pw.LoremText().sentence(5), 23, 1),
-  //   Product('23745', pw.LoremText().sentence(5), 94, 1),
-  //   Product('07834', pw.LoremText().sentence(5), 12, 1),
-  //   Product('23547', pw.LoremText().sentence(5), 34, 1),
-  //   Product('98387', pw.LoremText().sentence(5), 7.99, 2),
-  // ];
-
   @override
   Widget build(BuildContext context) {
+    Group _group = Provider.of<Group>(context);
     List<Received> _received = Provider.of<List<Received>>(context);
-    List<Expenditure> expenditure = Provider.of<List<Expenditure>>(context);
+    List<Expenditure> _expenditure = Provider.of<List<Expenditure>>(context);
+
     return Scaffold(
       backgroundColor: screenBackground,
       appBar: AppBar(
@@ -51,31 +36,72 @@ class AnalysisPage extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    height: 50,
+                    margin: EdgeInsets.all(10.0),
+                    width: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black38,
+                              blurRadius: 15.0,
+                              spreadRadius: 0.1,
+                              offset: Offset(0.7, 0.7))
+                        ]),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.picture_as_pdf,
+                          color: colorPrimaryDark,
+                        ),
+                        onPressed: () {
+                          AnalysisPrint(
+                            group: _group,
+                            received: _received,
+                            expenditure: _expenditure,
+                            totalCashIn: _received
+                                .map((e) => double.parse(
+                                    e.amount.toString().replaceAll(",", "")))
+                                .reduce((value, element) => value + element)
+                                .toString(),
+                            totalCashOut: _expenditure
+                                .map((e) => double.parse(
+                                    e.amount.toString().replaceAll(",", "")))
+                                .reduce((value, element) => value + element)
+                                .toString(),
+                          ).generatePdf(context);
+                        }),
+                  ),
+                ),
                 DashboardCard(
                   title: "Total cash in",
                   icon: Icons.arrow_downward,
-                  amount: "Ksh 60,200.00",
+                  iconBg: colorPrimaryDark,
+                  amount: _received
+                      .map((e) =>
+                          double.parse(e.amount.toString().replaceAll(",", "")))
+                      .reduce((value, element) => value + element)
+                      .toString(),
                 ),
                 SizedBox(
                   height: 6.0,
                 ),
                 DashboardCard(
-                    title: "Total cash out",
-                    icon: Icons.arrow_upward,
-                    amount: "Ksh 35,200.00"),
+                  title: "Total cash out",
+                  icon: Icons.arrow_upward,
+                  iconBg: colorPrimary,
+                  amount: _expenditure
+                      .map((e) =>
+                          double.parse(e.amount.toString().replaceAll(",", "")))
+                      .reduce((value, element) => value + element)
+                      .toString(),
+                ),
 
                 SizedBox(
                   height: 10.0,
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                      icon: Icon(Icons.picture_as_pdf),
-                      onPressed: () {
-                        AnalysisPrint(
-                                received: _received, expenditure: expenditure)
-                            .generatePdf(context);
-                      }),
                 ),
 
                 // LineChartPage(),
@@ -164,12 +190,10 @@ class DashboardCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String amount;
-  const DashboardCard({
-    Key key,
-    this.icon,
-    this.title,
-    this.amount,
-  }) : super(key: key);
+  final Color iconBg;
+  const DashboardCard(
+      {Key key, this.icon, this.title, this.amount, this.iconBg})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -192,9 +216,22 @@ class DashboardCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              icon,
-              color: secondaryPrimaryDark,
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                  color: iconBg,
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 15.0,
+                        offset: Offset(0.7, 0.7))
+                  ]),
+              child: Icon(
+                icon,
+                color: Colors.white,
+              ),
             ),
             SizedBox(
               width: 6.0,
@@ -210,7 +247,7 @@ class DashboardCard extends StatelessWidget {
                   height: 6.0,
                 ),
                 Text(
-                  amount,
+                  CurrencyUtils.formatCurrency(amount),
                   style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w600,

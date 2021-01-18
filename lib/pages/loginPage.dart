@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
           fillColor: inputBackground,
           filled: true,
           hintText: "Password",
-          suffix: IconButton(
+          suffixIcon: IconButton(
               icon: Icon(
                 _passwordVisible ? Icons.visibility_off : Icons.visibility,
               ),
