@@ -9,11 +9,9 @@ import 'package:mpesa_ledger/pages/widgets/drawer.dart';
 import 'package:mpesa_ledger/pages/widgets/error_message.dart';
 import 'package:mpesa_ledger/pages/widgets/pop_up_option_menu.dart';
 import 'package:mpesa_ledger/pages/widgets/progress_dialog.dart';
-import 'package:mpesa_ledger/services/auth_service.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
 import 'package:mpesa_ledger/utils/color.dart';
 import 'package:provider/provider.dart';
-import 'package:mpesa_ledger/models/group.model.dart';
 
 class GroupListPage extends StatelessWidget {
   DatabaseService _databaseService = DatabaseService();
