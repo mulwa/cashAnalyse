@@ -23,7 +23,7 @@ class MoneyInPage extends StatelessWidget {
         body: Column(
           children: [
             Expanded(
-              child: _received.length > 1
+              child: (_received?.length ?? 0) > 0
                   ? Column(
                       children: [
                         TotalWidget(

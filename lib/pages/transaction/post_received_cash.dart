@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/models/received.model.dart';
 import 'package:mpesa_ledger/pages/transaction/widgets/confirm_cash_recevied.dart';
 import 'package:mpesa_ledger/pages/widgets/custom_input_decoration.dart';
+import 'package:mpesa_ledger/pages/widgets/customdialog.dart';
 import 'package:mpesa_ledger/pages/widgets/dialogs_class.dart';
 import 'package:mpesa_ledger/pages/widgets/progress_dialog.dart';
 import 'package:mpesa_ledger/pages/widgets/roundedApealBtn.dart';
@@ -196,7 +198,7 @@ class MpesaUiWidget extends StatelessWidget {
       ),
     );
     try {
-      _databaseService.storeReceived(
+      String _res = await _databaseService.storeReceived(
           transactionRef: received.transactionRef,
           projectId: group.id,
           amount: received.amount,
@@ -206,12 +208,38 @@ class MpesaUiWidget extends StatelessWidget {
           transactionDate: received.transactionDate);
 
       Navigator.pop(context);
+      print(_res);
 
-      _textController.clear();
+      if (_res == 'saved') {
+        _textController.clear();
 
-      Timer(Duration(seconds: 1), () {
-        Navigator.pop(context);
-      });
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => CustomDialog(
+                  icon: FontAwesome.info_circle,
+                  title: "Success",
+                  description: "Transaction recorded ",
+                  cancelButtonText: "Ok",
+                  okayPress: () {
+                    Navigator.pop(dialogContext);
+                    Navigator.pop(context);
+                  },
+                ));
+      } else if (_res == 'exist') {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => CustomDialog(
+                  icon: FontAwesome.info_circle,
+                  title: "Duplicate",
+                  description: "Transaction already Exists ",
+                  cancelButtonText: "Ok",
+                  okayPress: () {
+                    Navigator.pop(dialogContext);
+                  },
+                ));
+      }
     } catch (error) {
       Navigator.pop(context);
       print("error $error");
@@ -390,7 +418,7 @@ class _CashUiWidgetState extends State<CashUiWidget> {
       ),
     );
     try {
-      await _databaseService.storeReceived(
+      String _result = await _databaseService.storeReceived(
           projectId: widget.group.id,
           transactionRef: received.transactionRef,
           amount: received.amount,
@@ -398,12 +426,23 @@ class _CashUiWidgetState extends State<CashUiWidget> {
           phoneNumber: received.phoneNumber,
           mode: received.mode,
           transactionDate: received.transactionDate);
-      Navigator.pop(context);
-      _formKey.currentState.reset();
 
-      Timer(Duration(seconds: 1), () {
+      if (_result == 'saved') {
         Navigator.pop(context);
-      });
+        _formKey.currentState.reset();
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => CustomDialog(
+                  icon: FontAwesome.info_circle,
+                  title: "Success",
+                  description: "Transaction recorded successfully",
+                  cancelButtonText: "Ok",
+                  okayPress: () {
+                    Navigator.pop(dialogContext);
+                  },
+                ));
+      }
     } catch (error) {
       Navigator.pop(context);
       print("error $error");

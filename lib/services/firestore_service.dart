@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:mpesa_ledger/models/expenditure.model.dart';
 import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/models/received.model.dart';
+import 'package:mpesa_ledger/pages/widgets/customdialog.dart';
 
 class DatabaseService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -13,7 +15,7 @@ class DatabaseService {
     return users.doc(uid).set({"email": email});
   }
 
-  Future<void> storeReceived(
+  Future<String> storeReceived(
       {String senderName,
       String phoneNumber,
       String amount,
@@ -21,20 +23,32 @@ class DatabaseService {
       String transactionRef,
       String mode = 'Mpesa',
       @required String projectId}) async {
-    return _db
+    String _result;
+    DocumentSnapshot _doc = await _db
         .collection('received')
         .doc(projectId)
         .collection("projectReceived")
         .doc(transactionRef)
-        .set({
-      "senderName": senderName,
-      "phoneNumber": phoneNumber,
-      "transactionRef": transactionRef,
-      "amount": amount,
-      "transactionDate": transactionDate,
-      "timestamp": DateTime.now().toString(),
-      "mode": mode,
-    });
+        .get();
+
+    if (!_doc.exists) {
+      print('does not exist');
+      await _doc.reference.set({
+        "senderName": senderName,
+        "phoneNumber": phoneNumber,
+        "transactionRef": transactionRef,
+        "amount": amount,
+        "transactionDate": transactionDate,
+        "timestamp": DateTime.now().toString(),
+        "mode": mode,
+      });
+      _result = "saved";
+      // print('document doesn\'t exists ${_doc.reference}');
+    } else {
+      print('document  exist ${_doc.reference}');
+      _result = 'exist';
+    }
+    return _result;
   }
 
   Future<void> storeExpenditure(

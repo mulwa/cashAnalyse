@@ -23,7 +23,7 @@ class MoneyOutPage extends StatelessWidget {
         body: Column(
           children: [
             Expanded(
-                child: _expenditure.length > 1
+                child: (_expenditure?.length ?? 0) > 1
                     ? Column(
                         children: [
                           TotalWidget(
