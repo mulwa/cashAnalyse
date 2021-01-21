@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:mpesa_ledger/models/expenditure.model.dart';
 import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/pages/transaction/widgets/confirm_expenditure.dart';
 import 'package:mpesa_ledger/pages/widgets/custom_input_decoration.dart';
+import 'package:mpesa_ledger/pages/widgets/customdialog.dart';
 import 'package:mpesa_ledger/pages/widgets/dialogs_class.dart';
 import 'package:mpesa_ledger/pages/widgets/progress_dialog.dart';
 import 'package:mpesa_ledger/pages/widgets/roundedApealBtn.dart';
@@ -359,15 +361,43 @@ class _CashOutPageState extends State<CashOutPage> {
     );
 
     try {
-      await DatabaseService().storeExpenditure(
+      String res = await DatabaseService().storeExpenditure(
           projectId: widget.group.id, expenditure: expenditure);
       Navigator.pop(context);
       // if (res != null) {
-      Navigator.pop(context);
       // _formKey.currentState.reset();
       // _expenditureDescController.clear();
       // _mpesaController.clear();
       // }
+      if (res == 'saved') {
+        Navigator.pop(context);
+
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => CustomDialog(
+                  icon: FontAwesome.check,
+                  title: "Success",
+                  description: "Transaction recorded successfully",
+                  cancelButtonText: "Ok",
+                  okayPress: () {
+                    Navigator.pop(dialogContext);
+                  },
+                ));
+      } else if (res == 'exist') {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (dialogContext) => CustomDialog(
+                  icon: FontAwesome.info_circle,
+                  title: "Duplicate",
+                  description: "Transaction already Exists ",
+                  cancelButtonText: "Ok",
+                  okayPress: () {
+                    Navigator.pop(dialogContext);
+                  },
+                ));
+      }
     } catch (error) {
       print("An error $error");
       _scaffoldKey.currentState.showSnackBar(SnackBar(

@@ -51,22 +51,31 @@ class DatabaseService {
     return _result;
   }
 
-  Future<void> storeExpenditure(
+  Future<String> storeExpenditure(
       {Expenditure expenditure, @required String projectId}) async {
-    return _db
+    String _result;
+    DocumentSnapshot doc = await _db
         .collection('expenditure')
         .doc(projectId)
         .collection("projectExpenditure")
         .doc(expenditure.transactionRef)
-        .set({
-      "receiverName": expenditure.receiverName,
-      "phoneNumber": expenditure.phoneNumber,
-      "amount": expenditure.amount,
-      "transactionDate": expenditure.transactionDate,
-      "timestamp": DateTime.now().toString(),
-      "mode": expenditure.mode,
-      "title": expenditure.title
-    });
+        .get();
+
+    if (!doc.exists) {
+      doc.reference.set({
+        "receiverName": expenditure.receiverName,
+        "phoneNumber": expenditure.phoneNumber,
+        "amount": expenditure.amount,
+        "transactionDate": expenditure.transactionDate,
+        "timestamp": DateTime.now().toString(),
+        "mode": expenditure.mode,
+        "title": expenditure.title
+      });
+      _result = 'saved';
+    } else {
+      _result = 'exist';
+    }
+    return _result;
   }
 
   Stream<QuerySnapshot> getProjectExpenditure({String projectId}) {
