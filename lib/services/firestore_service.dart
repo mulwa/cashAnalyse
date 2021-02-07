@@ -42,6 +42,13 @@ class DatabaseService {
         "timestamp": DateTime.now().toString(),
         "mode": mode,
       });
+      // increment total cash In
+      await _db
+          .collection('projects')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("userProjects")
+          .doc(projectId)
+          .update({"totalCashInCount": FieldValue.increment(1)});
       _result = "saved";
       // print('document doesn\'t exists ${_doc.reference}');
     } else {
@@ -71,6 +78,13 @@ class DatabaseService {
         "mode": expenditure.mode,
         "title": expenditure.title
       });
+      // increment total cash out to change to batch later
+      await _db
+          .collection('projects')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .collection("userProjects")
+          .doc(projectId)
+          .update({"totalCashOutCount": FieldValue.increment(1)});
       _result = 'saved';
     } else {
       _result = 'exist';
@@ -107,6 +121,7 @@ class DatabaseService {
         .add({
       "title": title,
       "description": description,
+      "transactionCount": "",
       "timestamp": new DateTime.now()
     });
   }
@@ -171,8 +186,16 @@ class DatabaseService {
   //       .snapshots();
   // }
 
-  Future<void> deleteProjectsCashIn({String projectId, String transactionId}) {
-    return _db
+  Future<void> deleteProjectsCashIn(
+      {String projectId, String transactionId}) async {
+    // decrease on cash in delete
+    await _db
+        .collection('projects')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .collection("userProjects")
+        .doc(projectId)
+        .update({"totalCashInCount": FieldValue.increment(-1)});
+    return await _db
         .collection("received")
         .doc(projectId)
         .collection("projectReceived")
