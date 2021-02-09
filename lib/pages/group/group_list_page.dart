@@ -4,6 +4,7 @@ import 'package:mpesa_ledger/models/expenditure.model.dart';
 import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/models/received.model.dart';
 import 'package:mpesa_ledger/pages/group/create_group.dart';
+import 'package:mpesa_ledger/pages/group/group_details.dart';
 import 'package:mpesa_ledger/pages/main_entry.dart';
 import 'package:mpesa_ledger/pages/widgets/drawer.dart';
 import 'package:mpesa_ledger/pages/widgets/error_message.dart';
@@ -116,6 +117,27 @@ class GroupListPage extends StatelessWidget {
         return SimpleDialog(
           title: Text("Options"),
           children: [
+            SimpleDialogOption(
+              child: Row(
+                children: [
+                  Icon(Icons.info),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text("About this group")
+                ],
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => GroupDetails(
+                              group: group,
+                            )));
+              },
+            ),
+            Divider(),
             SimpleDialogOption(
               child: Row(
                 children: [
