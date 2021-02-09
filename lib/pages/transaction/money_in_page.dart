@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/models/received.model.dart';
 import 'package:mpesa_ledger/pages/transaction/post_received_cash.dart';
+import 'package:mpesa_ledger/pages/widgets/customdialog.dart';
 import 'package:mpesa_ledger/pages/widgets/error_message.dart';
 import 'package:mpesa_ledger/pages/widgets/progress_dialog.dart';
 import 'package:mpesa_ledger/pages/widgets/total_display_widget.dart';
@@ -60,12 +62,26 @@ class MoneyInPage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             // _showNotificationWithDefaultSound();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PostReceivedCash(
-                          group: group,
-                        )));
+            (group.totalCashInCount ?? 0) > 2
+                ? showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (dialogContext) => CustomDialog(
+                          icon: FontAwesome.info_circle,
+                          title: "Payment required",
+                          description:
+                              "Hey ! , You have reached the maximum free recording to continue adding records  please make payment",
+                          okayButtonText: "Proceed to Payment",
+                          okayPress: () async {
+                            Navigator.pop(dialogContext);
+                          },
+                        ))
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PostReceivedCash(
+                              group: group,
+                            )));
           },
           child: Icon(
             Icons.add_circle,

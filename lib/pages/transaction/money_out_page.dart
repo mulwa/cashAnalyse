@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:mpesa_ledger/models/expenditure.model.dart';
 import 'package:mpesa_ledger/models/group.model.dart';
 import 'package:mpesa_ledger/pages/transaction/cash_out_record.dart';
+import 'package:mpesa_ledger/pages/widgets/customdialog.dart';
 import 'package:mpesa_ledger/pages/widgets/error_message.dart';
 import 'package:mpesa_ledger/pages/widgets/total_display_widget.dart';
 import 'package:mpesa_ledger/services/firestore_service.dart';
@@ -52,13 +54,26 @@ class MoneyOutPage extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // _showNotificationWithDefaultSound();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => CashOutPage(
-                          group: group,
-                        )));
+            (group.totalCashInCount ?? 0) > 2
+                ? showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (dialogContext) => CustomDialog(
+                          icon: FontAwesome.info_circle,
+                          title: "Payment required",
+                          description:
+                              "Hey ! , You have reached the maximum free recording to continue adding records  please make payment",
+                          okayButtonText: "Proceed to Payment",
+                          okayPress: () async {
+                            Navigator.pop(dialogContext);
+                          },
+                        ))
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CashOutPage(
+                              group: group,
+                            )));
           },
           child: Icon(
             Icons.add_circle,
