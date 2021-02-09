@@ -78,17 +78,16 @@ class CustomDialog extends StatelessWidget {
                   SizedBox(
                     width: 3,
                   ),
-                  Expanded(
-                    child: cancelButtonText != null
-                        ? RoundedApealBtn(
-                            text: cancelButtonText,
-                            color: Colors.grey,
-                            press: () {
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        : Container(),
-                  )
+                  cancelButtonText != null
+                      ? Expanded(
+                          child: RoundedApealBtn(
+                          text: cancelButtonText,
+                          color: Colors.grey,
+                          press: () {
+                            Navigator.of(context).pop();
+                          },
+                        ))
+                      : Container(),
                 ],
               ),
             ],
